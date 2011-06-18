@@ -1,0 +1,1 @@
+(menu command.run-tclsh --- [snippet.for...-(for)] [snippet.foreach...-(foreach)] [snippet.if...-(if)] [snippet.proc...-(proc)] [snippet.switch...-(switch)] [snippet.while...-(while)])

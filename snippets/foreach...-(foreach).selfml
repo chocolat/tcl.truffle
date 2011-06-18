@@ -1,0 +1,11 @@
+(name foreach...)
+
+(trigger
+    (tab foreach))
+
+(only-in source.tcl)
+
+(snippet [foreach %{1="var"} %{2="$list"} {
+	%{3}
+}
+])

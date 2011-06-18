@@ -1,0 +1,41 @@
+(detector
+    (extension tcl)
+    (extension adp)
+    (extension inc))
+
+(folding
+    (start [(<(?i:(head|table|div|style|script|ul|ol|form|dl))\b.*?>|\{)])
+    (stop [(</(?i:(head|table|div|style|script|ul|ol|form|dl))>|\})]))
+
+(in source.tcl
+    (shell-variables
+        (TM_COMMENT_START [# ]))
+    (comment.line [# ]))
+
+(in source.tcl
+    (pair `[`
+        `]`
+        (smart-typing)
+        (highlight))
+    (pair "
+        "
+        (smart-typing))
+    (pair [{]
+        [}]
+        (smart-typing)
+        (highlight))
+    (indentation.increase [\{[^"'}]*$]))
+
+(in string.regexp.tcl
+    (pair `[`
+        `]`
+        (smart-typing)
+        (highlight))
+    (pair [(]
+        [)]
+        (smart-typing)
+        (highlight))
+    (pair [{]
+        [}]
+        (smart-typing)
+        (highlight)))

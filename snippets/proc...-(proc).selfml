@@ -1,0 +1,12 @@
+(name proc...)
+
+(trigger
+    (tab proc))
+
+(only-in source.tcl)
+
+(snippet [proc %{1="name"} {%{2="args"}} \
+{
+	%{3}
+}
+])

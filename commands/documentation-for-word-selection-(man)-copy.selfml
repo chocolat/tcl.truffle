@@ -1,0 +1,27 @@
+(trigger
+    (key [[ctrl]H]))
+
+(name [Documentation for Word / Selection (man) copy])
+
+(only-in source.tcl)
+
+(input selection word)
+
+(output tooltip)
+
+(save nothing)
+
+(script [word=${TM_SELECTED_TEXT:-$TM_CURRENT_WORD}
+
+try_man () {
+	if man n -w "$word" &>/dev/null; then
+		page=$("$TM_SUPPORT_PATH/bin/html_man.sh" n "$word")
+		echo "<meta http-equiv='Refresh' content='0;URL=tm-file://$page'>"
+		exit_show_html
+	fi
+}
+
+try_man
+
+echo "Couldn’t find documentation in 'man n' for “${word}”"
+])

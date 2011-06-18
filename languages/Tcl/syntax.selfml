@@ -1,0 +1,160 @@
+(root source.tcl
+    (zone
+        (inner-identifier comment.line.number-sign.tcl)
+        (start
+            (regex [(?<=^|;)\s*((#))]
+                (1 comment.line.number-sign.tcl)
+                (2 punctuation.definition.comment.tcl)))
+        (end
+            (regex \n))
+        (subzones
+            (zone
+                (match
+                    (regex [(\\\\|\\\n)])))))
+    (zone
+        (match
+            (regex `(?<=^|[\[{;])\s*(if|while|for|catch|return|break|continue|switch|exit|foreach)\b`
+                (1 keyword.control.tcl))))
+    (zone
+        (match
+            (regex [(?<=^|})\s*(then|elseif|else)\b]
+                (1 keyword.control.tcl))))
+    (zone
+        (match
+            (regex [^\s*(proc)\s+([^\s]+)]
+                (1 keyword.other.tcl)
+                (2 entity.name.function.tcl))))
+    (zone
+        (match
+            (regex `(?<=^|[\[{;])\s*(after|append|array|auto_execok|auto_import|auto_load|auto_mkindex|auto_mkindex_old|auto_qualify|auto_reset|bgerror|binary|cd|clock|close|concat|dde|encoding|eof|error|eval|exec|expr|fblocked|fconfigure|fcopy|file|fileevent|filename|flush|format|gets|glob|global|history|http|incr|info|interp|join|lappend|library|lindex|linsert|list|llength|load|lrange|lreplace|lsearch|lset|lsort|memory|msgcat|namespace|open|package|parray|pid|pkg::create|pkg_mkIndex|proc|puts|pwd|re_syntax|read|registry|rename|resource|scan|seek|set|socket|SafeBase|source|split|string|subst|Tcl|tcl_endOfWord|tcl_findLibrary|tcl_startOfNextWord|tcl_startOfPreviousWord|tcl_wordBreakAfter|tcl_wordBreakBefore|tcltest|tclvars|tell|time|trace|unknown|unset|update|uplevel|upvar|variable|vwait)\b`
+                (1 keyword.other.tcl))))
+    (zone
+        (start
+            (regex `(?<=^|[\[{;])\s*(regexp|regsub)\b\s*`
+                (1 keyword.other.tcl)))
+        (end
+            (regex `[\n;]|(?=\])`))
+        (subzones
+            (zone constant.character.escape.tcl
+                (match
+                    (regex [\\(?:.|\n)])))
+            (zone
+                (match
+                    (regex -\w+\s*)))
+            (zone
+                (start
+                    (regex --\s*))
+                (end
+                    (regex []))
+                (subzones
+                    (include @regexp)))
+            (include @regexp)))
+    (include @escape)
+    (include @variable)
+    (zone string.quoted.double.tcl
+        (start
+            (regex "
+                (0 punctuation.definition.string.begin.tcl)))
+        (end
+            (regex "
+                (0 punctuation.definition.string.end.tcl)))
+        (subzones
+            (include @escape)
+            (include @variable)
+            (include @embedded))))
+
+(collection braces
+    (zone
+        (start
+            (regex [(?:^|(?<=\s))\{]))
+        (end
+            (regex `\}([^\s\]]*)`
+                (1 invalid.illegal.tcl)))
+        (subzones
+            (zone constant.character.escape.tcl
+                (match
+                    (regex [\\[{}\n]])))
+            (include @inner-braces))))
+
+(collection escape
+    (zone constant.character.escape.tcl
+        (match
+            (regex [\\(\d{1,3}|x[a-fA-F0-9]+|u[a-fA-F0-9]{1,4}|.|\n)]))))
+
+(collection regexp
+    (zone
+        (start
+            (regex `(?=\S)(?![\n;\]])`))
+        (end
+            (regex `(?=[\n;\]])`))
+        (subzones
+            (zone string.regexp.tcl
+                (start
+                    (regex [(?=[^ \t\n;])]))
+                (end
+                    (regex [(?=[ \t\n;])]))
+                (subzones
+                    (include @braces)
+                    (include @bare-string)
+                    (include @escape)
+                    (include @variable)))
+            (zone
+                (start
+                    (regex [[ \t]]))
+                (end
+                    (regex `(?=[\n;\]])`))
+                (subzones
+                    (include @variable)
+                    (include @embedded)
+                    (include @escape)
+                    (include @braces)
+                    (include @string))))))
+
+(collection string
+    (zone string.quoted.double.tcl
+        (start
+            (regex [(?:^|(?<=\s))(?=")]))
+        (end
+            (regex []))
+        (subzones
+            (include @bare-string))))
+
+(collection embedded
+    (zone source.tcl.embedded
+        (start
+            (regex `\[`
+                (0 punctuation.section.embedded.begin.tcl)))
+        (end
+            (regex `\]`
+                (0 punctuation.section.embedded.end.tcl)))
+        (subzones
+            (include source.tcl))))
+
+(collection variable
+    (zone variable.other.tcl
+        (match
+            (regex [(\$)((?:[a-zA-Z0-9_]|::)+(\([^\)]+\))?|\{[^\}]*\})]
+                (1 punctuation.definition.variable.tcl)))))
+
+(collection bare-string
+    (zone
+        (start
+            (regex [(?:^|(?<=\s))"]))
+        (end
+            (regex `"([^\s\]]*)`
+                (1 invalid.illegal.tcl)))
+        (subzones
+            (include @escape)
+            (include @variable))))
+
+(collection inner-braces
+    (zone
+        (start
+            (regex [\{]))
+        (end
+            (regex [\}]))
+        (subzones
+            (zone constant.character.escape.tcl
+                (match
+                    (regex [\\[{}\n]])))
+            (include @inner-braces))))

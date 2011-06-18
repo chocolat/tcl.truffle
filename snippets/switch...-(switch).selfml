@@ -1,0 +1,14 @@
+(name switch...)
+
+(trigger
+    (tab switch))
+
+(only-in source.tcl)
+
+(snippet [switch %{1="-exact"} -- %{2="$var"} {
+	%{3="match"} {
+		%{4}
+	}
+	default {%{5}}
+}
+])

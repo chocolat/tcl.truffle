@@ -1,0 +1,14 @@
+(trigger
+    (key [[cmd]R]))
+
+(name Run)
+
+(only-in source.tcl)
+
+(input nothing)
+
+(output html)
+
+(save file)
+
+(script [${TM_TCLSH:=tclsh} "$TM_FILEPATH"|pre])

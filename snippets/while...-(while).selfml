@@ -1,0 +1,11 @@
+(name while...)
+
+(trigger
+    (tab while))
+
+(only-in source.tcl)
+
+(snippet [while {%{1="condition"}} {
+	%{2}
+}
+])

@@ -1,0 +1,44 @@
+(detector
+    (extension tcl))
+
+(detector
+    (content-matches [^#!/.*\btclsh\b]))
+
+(folding
+    (start [\{\s*$])
+    (stop [^\s*\}]))
+
+(shell-variables
+    (TM_COMMENT_START [# ]))
+
+(comment.line [# ])
+
+(pair `[`
+    `]`
+    (smart-typing)
+    (highlight))
+
+(pair "
+    "
+    (smart-typing))
+
+(pair [{]
+    [}]
+    (smart-typing)
+    (highlight))
+
+(indentation.increase [\{[^"'}]*$])
+
+(in string.regexp.tcl
+    (pair `[`
+        `]`
+        (smart-typing)
+        (highlight))
+    (pair [(]
+        [)]
+        (smart-typing)
+        (highlight))
+    (pair [{]
+        [}]
+        (smart-typing)
+        (highlight)))
